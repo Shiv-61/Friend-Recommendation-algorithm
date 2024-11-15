@@ -26,5 +26,13 @@ The social network is represented using an adjacency list, where each user is a 
 
 1. Clone the repository to your local machine:
    ```bash
-   git clone https://github.com/yourusername/social-network-friend-recommendation.git
+   git clone https://github.com/Shiv-61/social-network-friend-recommendation.git
 
+2. Compile the code:
+   ```bash
+   g++ -o friend_recommendation main.cpp
+   ```
+3. Run the executable:
+   ```bash
+   ./friend_recommendation
+   ```
