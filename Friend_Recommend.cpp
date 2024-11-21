@@ -1,97 +1,72 @@
 #include <iostream>
+#include <vector>
 #include <unordered_map>
 #include <unordered_set>
 #include <queue>
-#include <vector>
+#include <algorithm>
 
 using namespace std;
 
-class SocialNetwork
-{
-private:
-    unordered_map<int, unordered_set<int>> adjList;
-
+class SocialNetwork {
 public:
-    void addFriendship(int user1, int user2)
-    {
-        adjList[user1].insert(user2);
-        adjList[user2].insert(user1);
+    unordered_map<string, unordered_set<string>> friendships;
+
+    void addFriendship(const string& user1, const string& user2) {
+        friendships[user1].insert(user2);
+        friendships[user2].insert(user1);
     }
 
-    // Get friend recommendations for a user
-    vector<int> getFriendRecommendations(int user)
-    {
-        vector<int> recommendations;
-        unordered_set<int> visited;
-        queue<int> q;
+    vector<string> recommendFriends(const string& user) {
+        unordered_set<string> recommended;
 
-        // Mark the user and their direct friends as visited
-        visited.insert(user);
-        for (int friendID : adjList[user])
-        {
-            visited.insert(friendID);
-            q.push(friendID);
+        if (friendships.find(user) == friendships.end()) {
+            cout << "User not found!" << endl;
+            return {};
         }
 
-        // BFS traversal to find friends of friends
-        while (!q.empty())
-        {
-            int currentFriend = q.front();
-            q.pop();
-
-            // Check friends of the current friend
-            for (int friendOfFriend : adjList[currentFriend])
-            {
-                if (visited.find(friendOfFriend) == visited.end())
-                {
-                    recommendations.push_back(friendOfFriend);
-                    visited.insert(friendOfFriend); // Mark as visited
+        for (const auto& friendName : friendships[user]) {
+            for (const auto& mutualFriend : friendships[friendName]) {
+                if (mutualFriend != user && friendships[user].find(mutualFriend) == friendships[user].end()) {
+                    recommended.insert(mutualFriend);
                 }
             }
         }
 
-        return recommendations;
+        vector<string> result(recommended.begin(), recommended.end());
+        return result;
+    }
+
+    void printFriends(const string& user) {
+        if (friendships.find(user) != friendships.end()) {
+            cout << user << "'s friends: ";
+            for (const auto& friendName : friendships[user]) {
+                cout << friendName << " ";
+            }
+            cout << endl;
+        } else {
+            cout << "User not found!" << endl;
+        }
     }
 };
 
-// Helper function to display recommendations
-void displayRecommendations(int user, const vector<int> &recommendations)
-{
-    cout << "Friend recommendations for user " << user << ": ";
-    if (recommendations.empty())
-    {
-        cout << "No recommendations available." << endl;
-    }
-    else
-    {
-        for (int rec : recommendations)
-        {
-            cout << rec << " ";
-        }
-        cout << endl;
-    }
-}
-
-// Main function
-int main()
-{
-    cin.tie(nullptr)->sync_with_stdio(false);
+int main() {
     SocialNetwork sn;
 
-    // Adding some friendships to the social network
-    sn.addFriendship(1, 2);
-    sn.addFriendship(1, 3);
-    sn.addFriendship(2, 4);
-    sn.addFriendship(2, 5);
-    sn.addFriendship(3, 6);
-    sn.addFriendship(5, 6);
-    sn.addFriendship(4, 7);
+    sn.addFriendship("Alice", "Bob");
+    sn.addFriendship("Alice", "Charlie");
+    sn.addFriendship("Bob", "Charlie");
+    sn.addFriendship("Bob", "David");
+    sn.addFriendship("Charlie", "Eve");
 
-    // Get friend recommendations for a specific user
-    int user = 1;
-    vector<int> recommendations = sn.getFriendRecommendations(user);
+    sn.printFriends("Alice");
 
-    displayRecommendations(user, recommendations);
+    vector<string> recommendations = sn.recommendFriends("Alice");
+
+    cout << "Friend Recommendations for Alice: ";
+    for (const auto& rec : recommendations) {
+        cout << rec << " ";
+    }
+    cout << endl;
 
     return 0;
 }
