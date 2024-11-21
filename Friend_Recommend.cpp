@@ -2,31 +2,37 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
-#include <queue>
 #include <algorithm>
 
 using namespace std;
 
-class SocialNetwork {
+class SocialNetwork
+{
 public:
     unordered_map<string, unordered_set<string>> friendships;
 
-    void addFriendship(const string& user1, const string& user2) {
+    void addFriendship(const string &user1, const string &user2)
+    {
         friendships[user1].insert(user2);
         friendships[user2].insert(user1);
     }
 
-    vector<string> recommendFriends(const string& user) {
+    vector<string> recommendFriends(const string &user)
+    {
         unordered_set<string> recommended;
 
-        if (friendships.find(user) == friendships.end()) {
+        if (friendships.find(user) == friendships.end())
+        {
             cout << "User not found!" << endl;
             return {};
         }
 
-        for (const auto& friendName : friendships[user]) {
-            for (const auto& mutualFriend : friendships[friendName]) {
-                if (mutualFriend != user && friendships[user].find(mutualFriend) == friendships[user].end()) {
+        for (const auto &friendName : friendships[user])
+        {
+            for (const auto &mutualFriend : friendships[friendName])
+            {
+                if (mutualFriend != user && friendships[user].find(mutualFriend) == friendships[user].end())
+                {
                     recommended.insert(mutualFriend);
                 }
             }
@@ -36,37 +42,49 @@ public:
         return result;
     }
 
-    void printFriends(const string& user) {
-        if (friendships.find(user) != friendships.end()) {
-            cout << user << "'s friends: ";
-            for (const auto& friendName : friendships[user]) {
+    void printAllFriends()
+    {
+        for (const auto &user : friendships)
+        {
+            const string &currentUser = user.first;
+            cout << currentUser << "'s friends: ";
+            for (const auto &friendName : user.second)
+            {
                 cout << friendName << " ";
             }
             cout << endl;
-        } else {
-            cout << "User not found!" << endl;
+        }
+    }
+
+    void printFriendRecommendations()
+    {
+        cout << "\nFriend Recommendations:" << endl;
+        for (const auto &user : friendships)
+        {
+            const string &currentUser = user.first;
+            vector<string> recommendations = recommendFriends(currentUser);
+            cout << "Friend Recommendations for " << currentUser << ": ";
+            for (const auto &rec : recommendations)
+            {
+                cout << rec << " ";
+            }
+            cout << endl;
         }
     }
 };
 
-int main() {
+int main()
+{
     SocialNetwork sn;
 
-    sn.addFriendship("Alice", "Bob");
-    sn.addFriendship("Alice", "Charlie");
-    sn.addFriendship("Bob", "Charlie");
-    sn.addFriendship("Bob", "David");
-    sn.addFriendship("Charlie", "Eve");
+    sn.addFriendship("Shiv", "Deep");
+    sn.addFriendship("Ronak", "Shubham");
+    sn.addFriendship("Raj", "Meet");
+    sn.addFriendship("Sahil", "Mohan");
+    sn.addFriendship("Rohit", "Vansh");
 
-    sn.printFriends("Alice");
-
-    vector<string> recommendations = sn.recommendFriends("Alice");
-
-    cout << "Friend Recommendations for Alice: ";
-    for (const auto& rec : recommendations) {
-        cout << rec << " ";
-    }
-    cout << endl;
+    sn.printAllFriends();
+    sn.printFriendRecommendations();
 
     return 0;
 }
