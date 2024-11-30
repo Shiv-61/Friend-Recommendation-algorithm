@@ -82,23 +82,7 @@ int main()
     
     string friend1;
     string friend2;
-    while(!check){
-         if(check==true)
-            break;
-         cout<<"Add Friends(y/n) : ";
-         cin>>choice;
-         if(choice=='y' || choice=='Y'){
-             cout<<"Enter 1st Friend name : "
-             getline(cin,friend1);
-             cout<<"Enter 2nd Friend name : "
-             getline(cin,friend2);
-             sn.addFriendship(friend1,friend2);
-         }
-         else if(choice =='n' || choice =='N')
-             check = true;
-         else
-             cout<<"Invalif input, Try again!";
-    }
+   
     sn.printAllFriends();
     sn.printFriendRecommendations();
 
