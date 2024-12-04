@@ -5,6 +5,7 @@
 #include <algorithm>
 
 using namespace std;
+using namespace std::chrono;
 
 class SocialNetwork
 {
@@ -75,6 +76,7 @@ public:
 
 int main()
 {
+    auto start = high_resolution_clock::now();
     SocialNetwork sn;
 
     bool check = false;
@@ -103,6 +105,9 @@ int main()
     
     sn.printAllFriends();
     sn.printFriendRecommendations();
+    auto stop = high_resolution_clock::now();
+    auto time = duration_cast<millisecond>(start-stop);
+    cout<<"Time taken for finding recommended friends :"<<time.count()<<endl;
 
     return 0;
 }
